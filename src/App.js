@@ -9,6 +9,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './SignIn/SignIn';
+import Register from './components/Register/Register';
 
 const action = {
   "particles": {
@@ -32,6 +33,8 @@ class App extends Component {
       input: '',
       imageURL: '',
       box: {},
+      route : 'signin',
+      isSignedIn : false,
     };
   }
 
@@ -46,7 +49,6 @@ class App extends Component {
       rightCol: width - (clarifaiFace.right_col * width),
       bottomRow: height - (clarifaiFace.bottom_row * height),
     };
-    console.log(box);
     return box;
   }
 
@@ -71,16 +73,33 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
+  onRouteChange(route){
+    if(route === 'signout'){
+      this.setState({isSignedIn: false});
+    } else if(route === 'home') {
+      this.setState({isSignedIn: true});
+    }
+    this.setState({route: route});
+  }
+
   render() {
     return (
       <div className="App">
         <Particles className = 'particle' params={action} />
-        <Navigation />
-        <SignIn />
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange.bind(this)} onButtonSubmit={this.onButtonSubmit.bind(this)}/>
-        <FaceRecognition box={this.state.box} imageURL={this.state.imageURL}/>
+        <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange.bind(this)}/>
+        { this.state.route === 'home'
+          ? <div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm onInputChange={this.onInputChange.bind(this)} onButtonSubmit={this.onButtonSubmit.bind(this)}/>
+              <FaceRecognition box={this.state.box} imageURL={this.state.imageURL}/>
+            </div>
+          : (
+              this.state.route === 'signin'
+              ? <SignIn onRouteChange={this.onRouteChange.bind(this)}/>
+              : <Register onRouteChange={this.onRouteChange.bind(this)}/>
+              )
+          }
       </div>
     );
   }
