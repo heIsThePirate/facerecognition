@@ -5,10 +5,10 @@ class Rank extends Component {
 		return(
 		<div className='white f3'>
 		<div>
-			{'Mohit, your current rank is...'}
+			{`${this.props.name}, your current rank is...`}
 			</div>
 			<div>
-			{'#5'}
+			{this.props.entries}
 			</div>
 		</div>
 		);
